@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>FinED-Bench — Financial Error Detection</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">F</div>
+        <div><strong>FinED-Bench</strong><span>Financial Error Detection</span></div>
+      </div>
+      <div class="nav-label">WORKSPACE</div>
+      <nav>
+        <button class="nav active" data-page="dashboard"><span>⌂</span> Overview</button>
+        <button class="nav" data-page="review"><span>✦</span> Language Review</button>
+        <button class="nav" data-page="explore"><span>▤</span> Benchmark</button>
+        <button class="nav" data-page="evaluate"><span>◈</span> Evaluation</button>
+        <button class="nav" data-page="results"><span>◫</span> Results</button>
+      </nav>
+      <div class="sidebar-foot">
+        <div class="status-dot"></div>
+        <div><b>Local benchmark</b><small>Running on your machine</small></div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <div class="eyebrow">BENCHMARK WORKSPACE</div>
+          <h1 id="page-title">Overview</h1>
+        </div>
+        <div class="top-actions"><span class="pill">LOCAL</span><button class="icon-btn" id="refresh">↻</button></div>
+      </header>
+
+      <section class="page active" id="page-dashboard">
+        <div class="hero">
+          <div><div class="eyebrow">FINANCIAL DOCUMENT QUALITY</div><h2>Measure how reliably models detect errors.</h2><p>FinED-Bench evaluates language models on realistic financial-document error detection across documents, scenes and error types.</p><button class="primary" data-goto="review">Start language review <span>→</span></button></div>
+          <div class="hero-orb"><div class="orb-inner"><b id="hero-f1">—</b><span>error<br>types</span></div></div>
+        </div>
+        <div class="stats-grid" id="stats-grid"></div>
+        <div class="grid-2">
+          <div class="panel"><div class="panel-head"><div><h3>Error taxonomy</h3><p>Distribution across annotated errors</p></div></div><div id="type-chart" class="bars"></div></div>
+          <div class="panel"><div class="panel-head"><div><h3>Document scenes</h3><p>Coverage of the benchmark corpus</p></div></div><div id="scene-chart" class="bars"></div></div>
+        </div>
+      </section>
+
+      <section class="page" id="page-review">
+        <div class="section-intro"><div><div class="eyebrow">COMPLETE LANGUAGE INPUT</div><h2>Review a financial document</h2><p>Paste a complete-language input to inspect it against the published benchmark. No fragmented fields or form-style inputs.</p></div><span class="pill accent">LANGUAGE ONLY</span></div>
+        <div class="review-layout">
+          <div class="panel editor-panel">
+            <div class="editor-head"><span>Input document</span><span id="char-count">0 characters</span></div>
+            <textarea id="review-input" placeholder="Paste a complete financial-document passage here…"></textarea>
+            <div class="editor-foot"><button class="ghost" id="load-example">Load English sample</button><button class="ghost" id="load-real">Load benchmark document</button><button class="secondary" id="build-prompt">Build model prompt</button><button class="primary" id="check-input">Check benchmark match <span>→</span></button><button class="primary" id="correct-input">Correct document ✎</button></div>
+          </div>
+          <div class="panel result-panel" id="review-result">
+            <div class="empty-state"><div class="empty-icon">✦</div><h3>Ready for review</h3><p>Enter complete language on the left. Analyze complete-language input and view benchmark annotations when an exact match is available.</p></div>
+          </div>
+        </div>
+        <div class="panel hidden" id="correct-panel" style="margin-top:18px"></div>
+        <div class="panel prompt-panel hidden" id="prompt-preview"><div class="panel-head"><div><h3>Model-ready prompt</h3><p>Generated from the original FinED-Bench prompt format.</p></div><button class="ghost" id="copy-prompt">Copy</button></div><pre id="prompt-text"></pre></div>
+      </section>
+
+      <section class="page" id="page-explore">
+        <div class="section-intro"><div><div class="eyebrow">PUBLISHED CORPUS</div><h2>Benchmark explorer</h2><p>Browse the published benchmark corpus and its English error annotations.</p></div></div>
+        <div class="panel filters"><select id="ex-ds"></select><select id="ex-scene"><option value="">All scenes</option></select><select id="ex-type"><option value="">All error types</option></select><input id="ex-q" placeholder="Search title or document text…"><button class="secondary" id="ex-go">Search</button><label class="check"><input type="checkbox" id="ex-text" checked> Show document text</label></div>
+        <div class="explore-layout"><div class="panel list-panel"><div class="panel-head"><div><h3>Documents</h3><p id="ex-count">—</p></div></div><div id="ex-list"></div><div class="pager"><button class="ghost" id="ex-prev">←</button><span id="ex-page">—</span><button class="ghost" id="ex-next">→</button></div></div><div class="panel doc-panel" id="ex-doc"><div class="empty-state"><div class="empty-icon">▤</div><h3>Select a document</h3><p>Choose a document to inspect its complete text and annotated errors.</p></div></div></div>
+      </section>
+
+      <section class="page" id="page-evaluate">
+        <div class="section-intro"><div><div class="eyebrow">SCORING</div><h2>Evaluate predictions</h2><p>Scores are computed locally by scripts/evaluate.py (micro precision, recall and F1 at type level and span level). They are not official FinED-Bench leaderboard numbers.</p></div></div>
+        <div class="eval-grid"><div class="panel"><div class="field"><label>Dataset</label><select id="ev-ds"></select></div><div class="field"><label>Evaluation</label><select id="ev-mode"><option value="baseline">Random baseline</option><option value="predictions">Prediction JSON</option><option value="gold">Gold sanity check</option></select></div><div class="field" id="seed-field"><label>Seed</label><input id="ev-seed" type="number" value="0"></div><div class="field" id="pred-field" hidden><label>Predictions JSON</label><textarea id="ev-text" placeholder='[ { "errors": [] }, ... ]'></textarea><div class="row"><input id="ev-file" type="file" accept="application/json"><a class="text-link" id="ev-template" href="#">Download template</a></div></div><div class="field"><label>Run label <span class="muted">optional</span></label><input id="ev-label" placeholder="e.g. GPT baseline"></div><button class="primary wide" id="ev-run">Run evaluation <span>→</span></button><div id="ev-status" class="status"></div></div><div class="panel" id="ev-result"><div class="empty-state"><div class="empty-icon">◈</div><h3>No evaluation yet</h3><p>Run the benchmark to see type-level and span-level precision, recall and F1.</p></div></div></div>
+      </section>
+
+      <section class="page" id="page-results">
+        <div class="section-intro"><div><div class="eyebrow">RUN HISTORY</div><h2>Results</h2><p>Saved evaluation runs from this local workspace.</p></div><div class="row"><a class="secondary link-button" href="/api/results/download">Download JSON</a><button class="ghost" id="rs-clear">Clear history</button></div></div>
+        <div class="panel table-wrap"><table id="rs-table"><tbody></tbody></table></div>
+      </section>
+
+      <footer>FinED-Bench · local research workspace · benchmark data from the original project; scoring is a local implementation</footer>
+    </main>
+  </div>
+  <div id="toast"></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

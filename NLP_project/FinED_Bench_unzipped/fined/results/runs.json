@@ -1,0 +1,22 @@
+[
+ {
+  "id": "5bb96caa",
+  "time": "2026-10-29 11:26:43",
+  "dataset": "eval_data",
+  "documents": 15,
+  "mode": "baseline",
+  "label": "random baseline (seed 0)",
+  "metrics": {
+   "type_level": {
+    "precision": 0.26666666666666666,
+    "recall": 0.08163265306122448,
+    "f1": 0.125
+   },
+   "span_level": {
+    "precision": 0.06666666666666667,
+    "recall": 0.02040816326530612,
+    "f1": 0.03125
+   }
+  }
+ }
+]
